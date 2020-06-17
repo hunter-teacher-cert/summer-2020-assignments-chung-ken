@@ -1,0 +1,81 @@
+//ThinkJava Chapter 4 - Exercise 1
+
+/******* THE CODE *******
+
+public static void zoop() {
+    baffle();
+    System.out.print("You wugga ");
+    baffle();
+}
+
+public static void main(String[] args) {
+    System.out.print("No, I ");
+    zoop();
+    System.out.print("I ");
+    baffle();
+}
+
+public static void baffle() {
+    System.out.print("wug");
+    ping();
+}
+
+public static void ping() {
+    System.out.println(".");
+}
+
+*******/
+
+
+/******* THE ANSWERS *******
+
+Question 1) What is the output of the following program?
+
+Long answer:
+The ping() method prints ".\n"
+The baffle() method prints "wug.\n"
+The zoop() method prints:
+"wug."
+"You wugga wug."
+
+*Note that all full stops (".") are followed by a new line.
+
+The first line to actually execute will be the first line inside the main method which prints "No, I "...
+Then the zoop() method is invoked / called, followed by an output "I ", which is finally followed by a call to the baffle() method.
+
+Short answer:
+The output will be...
+No, I wug.
+You wugga wug.
+I wug.
+
+***************************
+
+Question 2) Draw a stack diagram that shows the state of the program the first time ping is invoked.
+
+*Note: There are no variables inside of the methods, so I will represent the output in "quotes" in the order of execution instead.
+
+The first time ping() is invoked is during the execution of the zoop() call in the 2nd line of the main method.
+
+main [ "No, I "
+	zoop [
+		baffle [ "wug"
+			ping [ ".\n" ]
+		]
+		.
+		.
+		.
+	]
+	.
+	.
+	.
+]
+
+***************************
+
+Question 3) What happens if you invoke baffle(); at the end of the ping method?
+
+Is stack overflow the correct response?
+The baffle() method already invokes ping().  If the ping() method invokes baffle() back, it will get stuck in an endless cycle (loop) that is trying to print "wug." on new lines until the computer dies or the program is forcefully terminated.  It'd be nice if the compiler is savvy enough to catch this and it doesn't end up being a runtime error.
+
+******* END OF ANSWERS *******/
