@@ -1,6 +1,9 @@
 * Last name:
+Chung
 * First name:
+Kenneth
 * Github username:
+chung-ken
 
 * Instructions:
 
