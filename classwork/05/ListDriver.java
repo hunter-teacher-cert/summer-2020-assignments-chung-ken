@@ -76,9 +76,12 @@ public class ListDriver {
 		g.remove(5);
 		System.out.println(g.length + " =? " + g.nodeCount());
 		
-		// l.merge(g);
-		g.merge(l);
-		// g.copy(l);
+		l.merge(g);
+		// g.merge(l);
+		System.out.println(l);
+		System.out.println(g);
+		g.copy(l);
+		System.out.println(l);
 		System.out.println(g);
 	}//end of main
 

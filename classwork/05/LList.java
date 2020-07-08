@@ -90,6 +90,10 @@ public class LList {
 		return -1;
 	}
 	
+	/** the remove() method uses currentNode traverses the list to 
+	 * the Node preceding the Node we want to remove and copies the 
+	 * next value of Node to be removed
+	 */
 	public void remove(int index) {
 		if (index == 0) {
 			head = head.getNext();
@@ -99,6 +103,9 @@ public class LList {
 			for (int i = 0; i < index - 1; i++) {
 				currentNode = currentNode.getNext();
 			}
+			//i.e. - remove(3) - get to index 2
+			//currentMode is at index 2
+			//curreNode.getNext().getNext() points to index 4
 			currentNode.setNext(currentNode.getNext().getNext());
 			length--;
 		} else {
@@ -133,6 +140,7 @@ public class LList {
 			currentNode = currentNode.getNext();
 		}
 		currentNode.setNext(that.head);
+		this.length += that.length;
 	}
 	
 	@Override

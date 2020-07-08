@@ -15,94 +15,51 @@ NOTA BENE:  All births and deaths occur simultaneously. Together, they constitut
 import java.io.*;
 import java.util.*;
 
-public class LifeImage {
-	public static int ROWS = 250;
-	public static int COLS = 250;
-	public static boolean WRAP = true;
+import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
+
+// import javax.swing.ImageIcon;
+import javax.swing.JFrame;
+
+public class LifeImage extends Canvas {
+	public int ROWS = 250;
+	public int COLS = 250;
+	public boolean WRAP = true;
+	private Cell[][] world;
+	private int pixelWidth = 2;
+	private int pixelHeight = 2;
 
 	/**
 	 * createNewBoard method
 	 * creates a 2D array of ints to store states of cells
 	 */
-	public static int[][] createNewBoard() {
-		int[][] board = new int[ROWS][COLS];
+	 
+	public LifeImage(){
+		setBackground(new Color(0x000000));
+		setSize(COLS * pixelWidth, ROWS * pixelHeight);
+		//create 2-D array of cells
+		createNewWorld();
+	}
+	
+	public void createNewWorld() {
+		world = new Cell[ROWS][COLS];
 		for (int r = 0; r < ROWS; r++) {
 			for (int c = 0; c < COLS; c++) {
-				if (Math.random() < 0.8) {
-					board[r][c] = 0;
-				} else
-					board[r][c] = 255;
+				world[r][c] = new Cell();
 			}
 		}
-		return board;
 	}//end method createNewBoard
-
-	//borrowed code from internet search
-	public static void clearScreen() {
-		System.out.print("\033[H\033[2J");
-		// System.out.flush();
-	}
-	//ansi color picker
-	public static String printColor(int[][] board, int r, int c) {
-		int val = countNeighbours(board, r, c);
-		String colorPrint = "";
-		if ((val == 3 || val == 2) && board[r][c] == 'X')
-			colorPrint += "\u001B[42m\u001B[30m"; //Green background
-		else if (val == 3)
-			colorPrint += "\u001B[43m"; //Yellow background
-		// else if (val > 3)
-		// 	colorPrint += "\u001B[41m"; //Red background
-		else
-			colorPrint += "\u001B[40m\u001B[31m"; //Black background
-		return colorPrint + board[r][c] + "\u001B[0m";
-	}
-	//printBoard method
-	public static void printBoard(int[][] board) {
-		clearScreen();
-		System.out.print("\033[0;0H");
-		System.out.print((char)219);
-		for (int c = 0; c < COLS; c++) {
-			System.out.print((char)219);
-		}
-		System.out.println((char)219);
-		for (int r = 0; r < ROWS; r++) {
-			System.out.print((char)219);
-			for (int c = 0; c < COLS; c++) {
-				//System.out.print(board[r][c] + "," + countNeighbours(board, r, c) + " ");
-				// System.out.printf(board[r][c] + " ");
-				System.out.print(printColor(board, r, c));
-			}
-			System.out.println((char)219);
-		}
-		System.out.print((char)219);
-		for (int c = 0; c < COLS; c++) {
-			System.out.print((char)219);
-		}
-		System.out.println((char)219);
-		// delay(1000);
-	}//end method printBoard
-
-	/**
-	 * setCell method
-	 * set the cell at (r,c) to val
-	 * ' ' = no life, '#' = life and number of neighbors
-	 */
-	public static void setCell(int[][] board, int r, int c, int[][] boardCount) {
-		if (r >= 0 && r < board.length && c >= 0 && c < board[r].length) {
-			if (boardCount[r][c] == 0) {
-				board[r][c] = ' ';
-			} else {
-				board[r][c] = (int)boardCount[r][c];
-			}
-		}
-	}//end method setCell
 
 	/**
 	 * countNeighbours method
 	 * determine the state (number of neighbors) of a cell
 	 * returns an int
 	 */
-	 public static int countNeighbours(int[][] board, int r, int c) {
+	public void countNeighbours(int r, int c) {
 		int count = 0;
 		//check 8 surrounding cells for life
 		//account for special cases, i.e. - 4 corners and edge cells
@@ -113,7 +70,7 @@ public class LifeImage {
 					int col = (c + dc + COLS) % COLS;
 					int row = (r + dr + ROWS) % ROWS;
 	 				if (col != c || row != r) { //don't count itself
-						if (board[row][col] != 0) {
+						if (world[row][col].getCell() != 0) {
 	 						count++;
 	 					}
 	 				}
@@ -125,7 +82,7 @@ public class LifeImage {
 					//System.out.println("   counting neighbors...");
 					if (col >= 0 && col < COLS && row >= 0 && row < ROWS) { //within bounds
 						if (col != c || row != r) { //don't count itself
-							if (board[row][col] != 0) {
+							if (world[row][col].getCell() != 0) {
 								count++;
 							}
 						}
@@ -133,79 +90,47 @@ public class LifeImage {
 				}
 			}
 		}
-		return count;
-	 }//end method countNeighbours
-
-	/**
-	 * neighborCount method
-	 * Count the number of living neighbors each cell has
-	 * and return an int
-	 *
-	public static int[][] neighborCensus(int[][] board) {
-		int[][] boardCount = new int[ROWS][COLS];
+		world[r][c].setNeighbors(count);
+	}//end method countNeighbours
+	
+	//updateWorld method
+	public void updateWorld() {
 		for (int r = 0; r < ROWS; r++) {
 			for (int c = 0; c < COLS; c++) {
-				boardCount[r][c] = getCell(board, r, c);
-				//Note: getCell was replaces with countNeighbours method
+				countNeighbours(r, c);
 			}
 		}
-		return boardCount;
+		for (int r = 0; r < ROWS; r++) {
+			for (int c = 0; c < COLS; c++) {
+				System.out.println("  In updateWorld for loop..." + (r * c));
+				world[r][c].setCell();
+			}
+		}
+	}//end method updateWorld
+
+	//drawCell method
+	public void drawCell(Graphics g, int r, int c) {
+
+		int x = c * pixelWidth;
+		int y = r * pixelHeight;
+		int color = world[r][c].getCell();
+		//Graphics2D g2d = (Graphics2D) g;
+		g.setColor(new Color(color, color, color));
+        g.fillRect(x, y, pixelWidth, pixelHeight);
+		//Rectangle2D pixel = new Rectangle2D(x, y, pixelWidth, pixelHeight);
+		//g2d.draw(pixel);
 	}
-	 * Realized we don't need an int array
-	 */
-
-	/**
-	 * getNextGenCell method
-	 * given a board and a cell, determine if the cell is
-	 * alive or dead in the next generation based on rules
-	 * for Conway's Game of Life
-	 */
-	public static int getNextGenCell(int[][] board, int r, int c) {
-		int state = board[r][c];
-		// int neighbors = countNeighbours(board, r, c);
-		int neighbors = countNeighbours(board, r, c);
-		if (state != 0) {
-			if (neighbors < 2 || neighbors > 3) {
-				state = 0; //death rules
-			}
-		} else if (neighbors == 3) {
-			state = 255; //birth rule
-		}
-		//System.out.println("    Ending getNextGenCell");
-		return state;
-	}//end method getNextGenCell
-
-	//generateNextBoard method
-	public static int[][] generateNextBoard(int[][] board) {
-		int[][] newBoard = new int[ROWS][COLS];
-		for (int r = 0; r < ROWS; r++) {
-			for (int c = 0; c < COLS; c++) {
-				//System.out.println("  In generateNextBoard for loop...");
-				newBoard[r][c] = getNextGenCell(board, r, c);
+	
+	public void paint(Graphics g) {
+		// BufferedImage img = new BufferedImage(COLS * pixelWidth, ROWS * pixelHeight, BufferedImage.TYPE_INT_RGB);
+		// Graphics2D g = (Graphics2D)img.getGraphics();
+		for(int i = 0; i < COLS; i++) {
+			for(int j = 0; j < ROWS; j++) {
+				drawCell(g, i, j);
 			}
 		}
-		return newBoard;
-	}//end method generateNextBoard
-
-	/**
-	 * signsOfLife method
-	 * check for any life still on the board
-	 * if no life, game overpopulation
-	 */
-	public static boolean signsOfLife(int[][] board) {
-		int count = 0;
-		for (int r = 0; r < ROWS; r++) {
-			for (int c = 0; c < COLS; c++) {
-				if (board[r][c] != ' ') {
-					count++;
-				}
-			}
-		}
-		if (count > 0) {
-			return true;
-		}
-		return false;
-	}//end method signsOfLife
+		// updateWorld();
+	}
 
 	//helper method to slow down animation 
 	public static void delay(int n) {
@@ -216,41 +141,22 @@ public class LifeImage {
 	}
 	
 	public static void main(String[] args) {
-		int[][] board;
-		board = createNewBoard();
-		ImageTest img = new ImageTest(board);
-		img.drawImage();
-		for(int i = 0; i < 1000; i++) {
-			board = generateNextBoard(board);
-			delay(10);
-			img.updateImage(board);
-		}
-		img = null;
-		/*
-		Scanner bob = new Scanner(System.in);
-		if (args.length >= 2) {
-			ROWS = Integer.parseInt(args[0]);
-			COLS = Integer.parseInt(args[1]);
-		}
-		if (args.length == 3) {
-			WRAP = Boolean.parseBoolean(args[2]);
-		}
-		board = createNewBoard();
-		printBoard(board);
-		System.out.println("I finished printing the first board.");
+        // make the frame
+        JFrame frame = new JFrame("Game of Life");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-		System.out.print("Press and hold Enter to cycle (type anything to quit):  ");
-		String next = bob.nextLine();
-		// while (signsOfLife(board)) {
-		while (next.equals("")) {
-			//System.out.println("In main while loop...");
-			board = generateNextBoard(board);
-			printBoard(board);
-			System.out.print("Press and hold Enter to cycle (type anything to quit): ");
-			next = bob.nextLine();
+        // create and add the Life World
+        LifeImage canvas = new LifeImage();
+        frame.getContentPane().add(canvas);
+
+        // show the frame
+        frame.pack();
+        frame.setVisible(true);
+		for (int i = 0; i < 1000; i++) {
+			canvas.updateWorld();
+			delay(1000);
+			frame.getContentPane().add(canvas);
 		}
-		bob.close();
-		*/
-	}//end of main
+    }//end of main
 
 }//end of class

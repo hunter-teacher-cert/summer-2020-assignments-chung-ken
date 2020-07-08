@@ -36,9 +36,9 @@ public class SuperArray {
 		if (numberElements == data.length) {
 			grow();
 		}
-		if (index >= numberElements) {
+		if (index >= numberElements) {//add value to end
 			add(value);
-		} else {
+		} else {//or shift everything over and add in middle
 			for (int i = numberElements; i > index; i--) {
 				data[i] = data[i-1];
 			}
@@ -47,7 +47,7 @@ public class SuperArray {
 		}
 	}
 	
-	public void grow() {
+	private void grow() {//only used in-house
 		int[] data = new int[numberElements + 1];
 		for (int i = 0; i < numberElements; i++) {
 			data[i] = this.data[i];
@@ -70,6 +70,11 @@ public class SuperArray {
 			return data[index];
 		}
 		return -1;
+	}
+	
+	public int set(int index, int value) {//added feature by topher
+		
+		return oldVal;
 	}
 	
 	public boolean isEmpty() {
