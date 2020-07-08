@@ -143,6 +143,24 @@ public class LList {
 		this.length += that.length;
 	}
 	
+	// split(int index) truncates the current List up to index-1 and creates a 2nd List
+	// from index to end
+	public LList split(int index) {
+		if (index < this.length) {
+			LList list2 = new LList();
+			Node currentNode = this.head;
+			for (int i = 0; i < index-1; i++) {
+				currentNode = currentNode.getNext();
+			}
+			list2.head = currentNode.getNext();
+			currentNode.setNext(null);
+			list2.length = this.length - index;
+			this.length = index - 1;
+			return list2;
+		}
+		return null;
+	}
+	
 	@Override
 	public String toString() {
 		String s = "< ";

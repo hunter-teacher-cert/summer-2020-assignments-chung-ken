@@ -31,13 +31,13 @@ public class ListDriver {
 		System.out.println("Test Empty list print & isEmpty:");
 		System.out.println(g);
 		System.out.println(g.isEmpty());
-		System.out.println(g.length + " =? " + g.nodeCount());
+		// System.out.println(g.length + " =? " + g.nodeCount());
 
 		System.out.println("\nTest addFront 3x & isEmpty():");
 		g.addFront("good");
 		g.addFront("news");
 		g.addFront("everyone!");
-		System.out.println(g.length + " =? " + g.nodeCount());
+		// System.out.println(g.length + " =? " + g.nodeCount());
 		System.out.println(g);
 		System.out.println(g.isEmpty());
 
@@ -50,7 +50,7 @@ public class ListDriver {
 		g.set(0, "me!");
 		g.set(1, "job");
 		g.set(5, "wow");
-		System.out.println(g.length + " =? " + g.nodeCount());
+		// System.out.println(g.length + " =? " + g.nodeCount());
 		System.out.println(g);
 
 		System.out.println("\nTest insert 0, 2, 5, 10:");
@@ -58,7 +58,7 @@ public class ListDriver {
 		g.insert(2, "go");
 		g.insert(5, "cool");
 		g.insert(10, "too far");
-		System.out.println(g.length + " =? " + g.nodeCount());
+		// System.out.println(g.length + " =? " + g.nodeCount());
 		System.out.println(g);
 
 		System.out.println("\nTest search \"woo!\", \"cool\", \"too far\"");
@@ -68,21 +68,25 @@ public class ListDriver {
 
 		System.out.println("\nTest remove 0, 2:");
 		g.remove(0);
-		System.out.println(g.length + " =? " + g.nodeCount());
+		// System.out.println(g.length + " =? " + g.nodeCount());
 		System.out.println(g);
 		g.remove(2);
-		System.out.println(g.length + " =? " + g.nodeCount());
+		// System.out.println(g.length + " =? " + g.nodeCount());
 		System.out.println(g);
 		g.remove(5);
-		System.out.println(g.length + " =? " + g.nodeCount());
+		// System.out.println(g.length + " =? " + g.nodeCount());
 		
-		l.merge(g);
+		System.out.println("\nTest copy(), merge() and split()");
+		LList copyList = new LList();
+		copyList.copy(l);
+		System.out.println(l + " =copy? " + copyList);
 		// g.merge(l);
-		System.out.println(l);
-		System.out.println(g);
-		g.copy(l);
-		System.out.println(l);
-		System.out.println(g);
+		System.out.println(l + " merged with " + g);
+		l.merge(g);
+		System.out.println("= " + l);
+		LList splitList = l.split(4);
+		System.out.println(l + " got separated at index 4 " + splitList);
+
 	}//end of main
 
 }//end of class
