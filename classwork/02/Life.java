@@ -16,8 +16,8 @@ import java.io.*;
 import java.util.*;
 
 public class Life {
-	public static int ROWS = 4;
-	public static int COLS = 4;
+	public static int ROWS = 25;
+	public static int COLS = 25;
 	public static boolean WRAP = true;
 
 	/**
