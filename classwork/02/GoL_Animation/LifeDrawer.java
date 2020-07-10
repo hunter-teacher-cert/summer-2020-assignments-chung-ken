@@ -56,7 +56,8 @@ public class LifeDrawer {
 
         public MyPanel() {
             start = System.currentTimeMillis();
-			board = new LifeBoard(200,200,true,3); //(rows, cols, wrap, pixelSize)
+			board = new LifeBoard(200,200,true,3,10);
+			//LifeBoard(rows, cols, wrap, pixelSize, percentChanceOfLife)
         }
 
         @Override
