@@ -31,10 +31,28 @@ public class LifeBoard {
 	 */
 	 
 	public LifeBoard(){
-				
-		// setBackground(new Color(0x000000));
-		// setSize(COLS * pixelWidth, ROWS * pixelHeight);
-		//create 2-D array of cells
+		createNewWorld();
+	}
+	
+	public LifeBoard(int rows, int cols){
+		this.ROWS = rows;
+		this.COLS = cols;
+		createNewWorld();
+	}
+	
+	public LifeBoard(int rows, int cols, boolean wrap){
+		this.ROWS = rows;
+		this.COLS = cols;
+		this.WRAP = wrap;
+		createNewWorld();
+	}
+	
+	public LifeBoard(int rows, int cols, boolean wrap, int pixelSize){
+		this.ROWS = rows;
+		this.COLS = cols;
+		this.WRAP = wrap;
+		this.pixelWidth = pixelSize;
+		this.pixelHeight = pixelSize;
 		createNewWorld();
 	}
 	
@@ -43,6 +61,11 @@ public class LifeBoard {
 		for (int r = 0; r < ROWS; r++) {
 			for (int c = 0; c < COLS; c++) {
 				world[r][c] = new Cell();
+			}
+		}
+		for (int r = 0; r < ROWS; r++) {
+			for (int c = 0; c < COLS; c++) {
+				countNeighbours(r, c);
 			}
 		}
 	}//end method createNewBoard
@@ -90,13 +113,13 @@ public class LifeBoard {
 	public void updateWorld() {
 		for (int r = 0; r < ROWS; r++) {
 			for (int c = 0; c < COLS; c++) {
-				countNeighbours(r, c);
+				// System.out.println("  In updateWorld for loop..." + (r * c));
+				world[r][c].setCell();
 			}
 		}
 		for (int r = 0; r < ROWS; r++) {
 			for (int c = 0; c < COLS; c++) {
-				// System.out.println("  In updateWorld for loop..." + (r * c));
-				world[r][c].setCell();
+				countNeighbours(r, c);
 			}
 		}
 	}//end method updateWorld
