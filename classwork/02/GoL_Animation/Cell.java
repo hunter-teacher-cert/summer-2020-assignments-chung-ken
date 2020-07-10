@@ -45,4 +45,8 @@ public class Cell {
 		this.neighbors = neighbors;
 	}
 	
+	public int getNeighbors() {
+		return this.neighbors;
+	}
+	
 }//end of class
