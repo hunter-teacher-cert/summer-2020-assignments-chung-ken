@@ -25,10 +25,6 @@ public class LifeBoard {
 	public int pixelWidth = 2;
 	public int pixelHeight = 2;
 
-	/**
-	 * createNewBoard method
-	 * creates a 2D array of ints to store states of cells
-	 */
 	 
 	public LifeBoard(){
 		createNewWorld();
@@ -56,6 +52,20 @@ public class LifeBoard {
 		createNewWorld();
 	}
 	
+	public LifeBoard(int rows, int cols, boolean wrap, int pixelSize, int chance){
+		this.ROWS = rows;
+		this.COLS = cols;
+		this.WRAP = wrap;
+		this.pixelWidth = pixelSize;
+		this.pixelHeight = pixelSize;
+		createNewWorld(chance);
+	}
+	
+	
+	/**
+	 * createNewBoard method
+	 * creates a 2D array of ints to store states of cells
+	 */
 	public void createNewWorld() {
 		world = new Cell[ROWS][COLS];
 		for (int r = 0; r < ROWS; r++) {
@@ -68,7 +78,22 @@ public class LifeBoard {
 				countNeighbours(r, c);
 			}
 		}
-	}//end method createNewBoard
+	}
+	
+	//this overloaded method includes the percent chance life will be created in a cell
+	public void createNewWorld(int chance) {
+		world = new Cell[ROWS][COLS];
+		for (int r = 0; r < ROWS; r++) {
+			for (int c = 0; c < COLS; c++) {
+				world[r][c] = new Cell(chance);
+			}
+		}
+		for (int r = 0; r < ROWS; r++) {
+			for (int c = 0; c < COLS; c++) {
+				countNeighbours(r, c);
+			}
+		}
+	}
 
 	/**
 	 * countNeighbours method
