@@ -56,7 +56,7 @@ public class LifeDrawer {
 
         public MyPanel() {
             start = System.currentTimeMillis();
-			board = new LifeBoard();
+			board = new LifeBoard(200,200,true,3); //(rows, cols, wrap, pixelSize)
         }
 
         @Override
@@ -67,9 +67,23 @@ public class LifeDrawer {
 				for(int c = 0; c < board.ROWS; c++) {
 					int x = c * board.pixelWidth;
 					int y = r * board.pixelHeight;
-					int color = board.world[r][c].getCell();
-
-					g.setColor(new Color(color, color, color));
+					int value = board.world[r][c].getCell();
+					
+					//set colors depending on neighbors (if cell is alive)
+					//happy == green (2 or 3 neighbors)
+					//lonely == yellow (1 neighbor)
+					//overcrowded == red (4 or more neighbors)
+					if (value > 0) { //if alive
+						if (board.world[r][c].getNeighbors() == 1) {
+							g.setColor(new Color(value, value, 0));
+						} else if (board.world[r][c].getNeighbors() <= 3) {
+							g.setColor(new Color(0, value, 0));
+						} else {
+							g.setColor(new Color(value, 0, 0));
+						}
+					} else { //set black
+						g.setColor(new Color(value, value, value));
+					}
 					g.fillRect(x, y, board.pixelWidth, board.pixelHeight);
 				}
 			}
