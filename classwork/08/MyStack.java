@@ -1,3 +1,15 @@
+/* Created: Friday, July 10, 2020
+ * *** Stack Project ***
+ * Traditional operations on a stack are:
+ * Operation	|	Explanation								|	Pseudo code example
+ * push			|	add an item to the top of the stack		|	push "A"
+ * pop			|	remove and return the item on the top	|
+				|	of the stack							|	pop
+ * top			|	return but don't remove the item		|
+				|	from the top of the stack				|	top
+ * this code also implements an isEmpty() method and a toString() method
+ */
+ 
 public class MyStack{
 	// add your internal data structure here
 	private LList stack;
@@ -21,6 +33,8 @@ public class MyStack{
 			return data;
 		}
 		return null;
+		//consider throwing an error instead of returning null
+		//throw new IndexOutOfBoundsException("Nothing to pop");
 	}
 
 	public String top(){
@@ -29,6 +43,7 @@ public class MyStack{
 		if (this.stack.length() > 0)
 			return this.stack.get(0);
 		return null;
+		//throw new IndexOutOfBoundsException("Nothing to pop");
 	}
 
 	public boolean isEmpty(){
@@ -39,6 +54,16 @@ public class MyStack{
 	public int size(){
 		// add code to return the number of items currently on the stack
 		return this.stack.length();
+	}
+
+	public String toString(){//pops everything off the stack to print
+		String output = "";
+		//not implemented
+		//not sure if I want to pop all of the items off of the stack with a toString call
+		while(!this.stack.isEmpty()) {
+			output += pop();
+		}
+		return output;
 	}
 
 }
