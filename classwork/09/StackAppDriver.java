@@ -6,8 +6,18 @@ public class StackAppDriver extends MyStack{
 	//Use a stack to push on a string and pop off in reverse
 	public static String reverse(String s) {
 		MyStack stack = new MyStack();
-		for (int i = 0; i < s.length(); i++) {
-			stack.push(""+s.charAt(i));
+		if (s.contains(" ")) { //if there's a space, reverse by word
+			int i = s.indexOf(" ");
+			while (i != -1) {
+				stack.push(s.substring(0, i+1)); //include space in push for toString spacing
+				s = s.substring(i+1, s.length());
+				i = s.indexOf(" ");
+			}
+			stack.push(s + " ");
+		} else { //else, reverse by letter
+			for (int i = 0; i < s.length(); i++) {
+				stack.push(""+s.charAt(i));
+			}
 		}
 		return stack.toString();
 	}//reverse
@@ -16,16 +26,70 @@ public class StackAppDriver extends MyStack{
 	// case1) by characters ignoring spaces and capitalization, OR
 	// case2) by word ignoring capitalization
 	public static boolean isPalindrome(String s) {
-		String sNoSpaces = "";
+		String sJustLetters = "";
 		if ( s.contains(" ") ) {
 			for (int i = 0; i < s.length(); i++) {
-				if (s.charAt(i) != ' ') {
-					sNoSpaces += s.charAt(i);
+				char c = s.charAt(i);
+				if (c != ' ' && c != '.' && c != ',' ) {
+					sJustLetters += c;
 				}
 			}
 		}
-		String sBackwards = reverse(sNoSpaces);
-		return sBackwards.equalsIgnoreCase(s); //boolean zen from Jimmy D.
+		boolean case1 = sJustLetters.equalsIgnoreCase(reverse(sJustLetters));
+		
+		//Check case2
+		boolean case2 = false;
+		
+		//let n = # of words (separated by single spaces)
+		//if n is even, push half and then start comparing the 2nd half for string equality
+		//if n is odd, we can ignore the middle word and check (n-1)/2 cases for string equality
+		if (s.contains(" ")) {
+			case2 = true;
+			MyStack stack = new MyStack();
+			int n = 1;
+			String sRemaining = s.substring(0, s.length()); //potential error if same pointer(?)
+			while (sRemaining.contains(" ")) {
+				n++;
+				sRemaining = sRemaining.substring(sRemaining.indexOf(" ") + 1, sRemaining.length());
+			}
+			if (n % 2 == 0) { //even # of words, push n/2 words onto stack and then start checking
+				for (int i = 0; i < n/2; i++) {
+					stack.push(s.substring(0, s.indexOf(" ")));
+					s = s.substring(s.indexOf(" ") + 1, s.length());
+				}
+				for (int i = 0; i < n/2; i++) {
+					if (s.contains(" ")) {
+						if (!stack.pop().equalsIgnoreCase(s.substring(0, s.indexOf(" ")))) {
+							case2 = false;
+						}
+						s = s.substring(s.indexOf(" ") + 1, s.length());
+					} else { //no more spaces means it's time to check the last word
+						if(!stack.pop().equalsIgnoreCase(s)) {
+							case2 = false;
+						}
+					}
+				}
+			} else { //odd # of words, push on (n-1)/2 words, skip the middle, then start checking
+				for (int i = 0; i < (n-1)/2; i++) {
+					stack.push(s.substring(0, s.indexOf(" ")));
+					s = s.substring(s.indexOf(" ") + 1, s.length());
+				}
+				s = s.substring(s.indexOf(" ") + 1, s.length()); //ignore middle word
+				for (int i = 0; i < (n-1)/2; i++) {
+					if (s.contains(" ")) {
+						if (!stack.pop().equalsIgnoreCase(s.substring(0, s.indexOf(" ")))) {
+							case2 = false;
+						}
+						s = s.substring(s.indexOf(" ") + 1, s.length());
+					} else { //no more spaces means it's time to check the last word
+						if(!stack.pop().equalsIgnoreCase(s)) {
+							case2 = false;
+						}
+					}
+				}
+			}				
+		}
+		return case1 || case2;
 			
 	}//isPalindrome
 	
@@ -116,6 +180,9 @@ public class StackAppDriver extends MyStack{
 	public static void main(String[] args) {
 		String s;
 		System.out.println("****** Test reverse ******");
+		s = "palindrome";
+		System.out.println("Input: " + s);
+		System.out.println("Reverse: " + reverse(s));
 		s = "not a palindrome";
 		System.out.println("Input: " + s);
 		System.out.println("Reverse: " + reverse(s));
@@ -126,10 +193,25 @@ public class StackAppDriver extends MyStack{
 		s = "racecar";
 		System.out.println("Input: " + s);
 		System.out.println("isPalindrome: " + isPalindrome(s));
+		s = "race car";
+		System.out.println("Input: " + s);
+		System.out.println("isPalindrome: " + isPalindrome(s));
 		s = "A man a plan a canal Panama";
 		System.out.println("Input: " + s);
 		System.out.println("isPalindrome: " + isPalindrome(s));
-		s = "I am what am i";
+		s = "Was it a car or a cat I saw";
+		System.out.println("Input: " + s);
+		System.out.println("isPalindrome: " + isPalindrome(s));
+		s = "Never even or odd";
+		System.out.println("Input: " + s);
+		System.out.println("isPalindrome: " + isPalindrome(s));
+		s = "Never odd or even";
+		System.out.println("Input: " + s);
+		System.out.println("isPalindrome: " + isPalindrome(s));
+		s = "I am what am I";
+		System.out.println("Input: " + s);
+		System.out.println("isPalindrome: " + isPalindrome(s));
+		s = "I am what I am";
 		System.out.println("Input: " + s);
 		System.out.println("isPalindrome: " + isPalindrome(s));
 				
