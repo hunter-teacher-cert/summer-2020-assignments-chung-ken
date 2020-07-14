@@ -11,6 +11,7 @@
  
 public class StackAppDriver {
 	
+	
 	/* reverse methods takes a String and returns a String
 	 * It uses a stack to push on a string and pop off the characters or strings in reverse.
 	 * 1) One word, with no spaces, will be reversed.
@@ -33,6 +34,7 @@ public class StackAppDriver {
 		}
 		return stack.toString();
 	}//reverse
+	
 	
 	/* isPalindrome method takes a String and returns a boolean
 	 * Check if a string is a palindrome:
@@ -106,11 +108,48 @@ public class StackAppDriver {
 		return case1 || case2;		
 	}//isPalindrome
 	
+	
 	/* parenCheck method takes a String and returns a boolean
 	 * It checks the order of brackets, (), [] and {}, and if each set of
 	 * brackets has its corresponding pair.
 	 */
 	public static boolean parenCheck(String s) {
+		//openStack will contain brackets that have not yet been paired
+		MyStack openStack = new MyStack();
+		for (int i = 0; i < s.length(); i++) {
+			char c = s.charAt(i);
+			//push open brackets onto the stack
+			if ( c == '(' ) openStack.push(""+c);
+			else if ( c == '[' ) openStack.push(""+c);
+			else if ( c == '{' ) openStack.push(""+c);
+			//pop off closing brackets if in correct order, otherwise return false
+			//**TO D0 - Change to 2 more elifs - check if stack is not empty vs empty
+			else if ( !openStack.isEmpty() ) {
+				if ( c == ')' || c == ']' || c == '}' ) {
+					if ( c == ')' && openStack.top().equals("(") ) {
+						openStack.pop();
+					} else if ( c == ']' && openStack.top().equals("[") ) {
+						openStack.pop();
+					} else if ( c == '}' && openStack.top().equals("{") ) {
+						openStack.pop();
+					} else
+						return false;
+				}
+			} else if ( c == ')' || c == ']' || c == '}' ) { //case were stack is empty
+				return false;
+			}
+		}
+		//if we exit the loop and the openStack still has stuff, oops!
+		if ( !openStack.isEmpty() )
+			return false;
+		
+		//if you got to the end, well done
+		return true;
+	}//parenCheck
+	
+	
+	/* Old version of parenCheck - replaced with the method above...
+	public static boolean parenCheckOld(String s) {
 		MyStack roundStack = new MyStack();
 		MyStack squareStack = new MyStack();
 		MyStack curlyStack = new MyStack();
@@ -192,7 +231,8 @@ public class StackAppDriver {
 		
 		//if we got to here, all brackets match
 		return true;
-	}//parenCheck
+	}//parenCheckOld
+	*/
 	
 	public static void main(String[] args) {
 		String s;
