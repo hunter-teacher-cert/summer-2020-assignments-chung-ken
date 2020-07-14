@@ -1,9 +1,21 @@
-//Stack Applications
-//Created: Monday, July 13, 2020
-
-public class StackAppDriver extends MyStack{
+/* Stack Applications
+ * Created: Monday, July 13, 2020
+ *
+ * StackAppDriver <<< MyStack < LList < Node
+ *
+ * Methods:
+ * - String reverse(String s)
+ * - boolean isPalindrome(String s)
+ * - boolean 
+ */
+ 
+public class StackAppDriver {
 	
-	//Use a stack to push on a string and pop off in reverse
+	/* reverse methods takes a String and returns a String
+	 * It uses a stack to push on a string and pop off the characters or strings in reverse.
+	 * 1) One word, with no spaces, will be reversed.
+	 * 2) A sentence with spaces will reverse the order of the words.
+	 */
 	public static String reverse(String s) {
 		MyStack stack = new MyStack();
 		if (s.contains(" ")) { //if there's a space, reverse by word
@@ -22,9 +34,11 @@ public class StackAppDriver extends MyStack{
 		return stack.toString();
 	}//reverse
 	
-	//Check if a string is a palindrome:
-	// case1) by characters ignoring spaces and capitalization, OR
-	// case2) by word ignoring capitalization
+	/* isPalindrome method takes a String and returns a boolean
+	 * Check if a string is a palindrome:
+	 * case1) by characters ignoring spaces and capitalization, OR
+	 * case2) by word ignoring capitalization
+	 */
 	public static boolean isPalindrome(String s) {
 		String sJustLetters = "";
 		if ( s.contains(" ") ) {
@@ -89,10 +103,13 @@ public class StackAppDriver extends MyStack{
 				}
 			}				
 		}
-		return case1 || case2;
-			
+		return case1 || case2;		
 	}//isPalindrome
 	
+	/* parenCheck method takes a String and returns a boolean
+	 * It checks the order of brackets, (), [] and {}, and if each set of
+	 * brackets has its corresponding pair.
+	 */
 	public static boolean parenCheck(String s) {
 		MyStack roundStack = new MyStack();
 		MyStack squareStack = new MyStack();
