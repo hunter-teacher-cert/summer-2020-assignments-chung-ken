@@ -209,7 +209,7 @@ public class Boogle
 	// sorting method 1
 	// look at the whole list to find the smallest value, then swap it to the front
 	// then repeat the previous step for the remaining unsorted list
-	public static void sort(ArrayList<Integer> al) {
+	public static void selectionSort(ArrayList<Integer> al) {
 		
 		for (int i = 0; i < al.size()-1; i++) {
 			
@@ -262,7 +262,7 @@ public class Boogle
     salamander.add(23);
     salamander.add(16);
     System.out.println(salamander);
-	sort(salamander);
+	selectionSort(salamander);
 	System.out.println(salamander);
 	
     //search for target in the list
@@ -285,8 +285,10 @@ public class Boogle
 	// check 8 --> done
 
     //add another element, for an even num of elems
-    salamander.add(42);
+    salamander.add(19);
     System.out.println(salamander);
+	selectionSort(salamander);
+	System.out.println(salamander);
     //search for target in the list
     System.out.println(binSearch(salamander, 8));  // 1
 	
