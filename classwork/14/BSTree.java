@@ -8,6 +8,23 @@ public class BSTree {
 		this.root = null;
 	}
 	
+	public int search(int key) {
+		TreeNode current = root;
+		
+		while ( current != null ) {
+			int currentValue = current.getData();
+			if (currentValue == key) {
+				return currentValue;
+			} else if (currentValue < key) {
+				current = current.getRight();
+			} else {
+				current = current.getLeft();
+			}
+		}
+		
+		throw new NullPointerException();
+	}//end search
+	
 	public void seed() {
 		TreeNode t;
 		 
@@ -18,7 +35,7 @@ public class BSTree {
 		t = new TreeNode(20);
 		root.setRight(t);
 		 
-		root.getLeft.setRight( new TreeNode(8));
+		root.getLeft().setRight( new TreeNode(8));
 
 		t = new TreeNode(15);
 		root.getRight().setLeft(t);
