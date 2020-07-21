@@ -133,6 +133,92 @@ public class BSTree {
 	}
 
 	
+/* delete a node from a tree... reconnecting other nodes can get complicated */
+	public void delete(int key) {
+		
+		//if tree is empty... stop here
+		if (root == null) {
+			return;
+		}
+		
+		//otherwise, look for key in the tree
+		TreeNode front = root;
+		TreeNode trailer = front;
+		
+		while (front.getData() != key && front != null) {
+			int frontValue = front.getData();
+			if (frontValue == key) { //found the key
+				break;
+			} else if (frontValue < key) { //not big enough, move right
+				trailer = front;
+				front = front.getRight();
+			} else { //too big, move left
+				trailer = front;
+				front = front.getLeft();
+			}
+		}
+		
+		if (front == null) { //we didn't find it
+			return;
+		}
+		
+		//if we get to here, we found key in the tree. now we have to "delete" it
+		//case 1 - if the node is a leaf, we can just delete
+		//  this means that left and right point both point to null
+		//case 2 - if the node has one branch, we can just delete by
+		//  attaching this.child to this.parent
+		//case 3 - if the node has 2 branches, we have to replace with either:
+		//  a) the largest node on the left branch OR
+		//  b) the smallest node on the right branch
+		if (front.getLeft() == null && front.getRight() == null) { //case 1
+			if (trailer.getLeft() != null && trailer.getLeft().getData() == key) {
+				trailer.setLeft(null);
+			} else {
+				trailer.setRight(null);
+			}
+		} else if (front.getLeft() == null) { //case 2, has right value
+			if (trailer.getLeft().getData() == key) {
+				trailer.setLeft(front.getRight());
+			} else {
+				trailer.setRight(front.getRight());
+			}
+		} else if (front.getRight() == null) { //case 2, has left value
+			if (trailer.getLeft().getData() == key) {
+				trailer.setLeft(front.getLeft());
+			} else {
+				trailer.setRight(front.getLeft());
+			}
+		} else { //case 3 - left and right not null
+			//save current location
+			TreeNode frontDelete = front;
+			TreeNode trailerDelete = trailer;
+			//find replacement value - using (a) - largest node on the left
+			front = front.getLeft();
+			while (front.getRight() != null) {
+				trailer = front;
+				front = front.getRight();
+			}
+			//if replacement node has a left branch, connect it to trailer
+			if (front.getLeft() != null) {
+				trailer.setRight(front.getLeft());
+			} else { //otherwise, just disconnect
+				trailer.setRight(null);
+			}
+			//replace data at frontDelete with replacement data
+			//instead of replacing whole node and copying left-right branches
+			frontDelete.setData(front.getData());
+			
+		}
+	}
+	
+	//helper method for delete - to find replacement value (case 3)
+	public TreeNode replacementNode(TreeNode top) {
+		int countleft = 0;
+		int countright = 0;
+		return null;
+	}
+	
+	//create a basic tree
 	public void seed() {
 		TreeNode t;
 		 
@@ -152,4 +238,144 @@ public class BSTree {
 		root.getRight().setRight(t);
 	}
 	
+	//Uses recursion to build a tree with the numbers 1 through (2^(h+1)-1)
+	//with h rows.
+	public void createTree(int h) { //h is the height of the tree
+		int value = (int)Math.pow(2,h);
+		root = new TreeNode(value);
+		createTree(root, value, h-1);
+	}
+	
+	public void createTree(TreeNode current, int pValue, int h) {
+		if (h == 0) {
+			current.setLeft(new TreeNode(pValue-1));
+			current.setRight(new TreeNode(pValue+1));
+			return;
+		}
+		int leftValue = pValue-(int)Math.pow(2,h);
+		int rightValue = pValue+(int)Math.pow(2,h);
+		current.setLeft(new TreeNode(leftValue));
+		current.setRight(new TreeNode(rightValue));
+		
+		createTree(current.getLeft(), leftValue, h-1);
+		createTree(current.getRight(), rightValue, h-1);
+	}
+	
+	//recursive method to count how many layers in our tree
+	public int countLayers() {
+		TreeNode current = root;
+		int layer = 0;
+		return countLayers(root, layer);
+	}
+	
+	public int countLayers(TreeNode current, int layer) {
+		if (current.getLeft() == null && current.getRight() == null) {
+			return layer;
+		}
+		int rightLayers = layer;
+		int leftLayers = layer;
+		layer++; //go to the next layer
+		if (current.getRight() != null) { //count the right branch
+			rightLayers = countLayers(current.getRight(), layer);
+		}
+		
+		if (current.getLeft() != null) { //count the left branch
+			leftLayers = countLayers(current.getLeft(), layer);
+		}
+		
+		if (layer >= rightLayers && layer >= leftLayers) {
+			return layer;
+		}
+		
+		if (rightLayers >= leftLayers && rightLayers > layer) {
+			return rightLayers;
+		}
+		
+		if (leftLayers > rightLayers && leftLayers > layer) {
+			return leftLayers;
+		}
+		
+		return -1;
+	}
+	
+	//helper method for toString - puts all node data into an ArrayList by layer
+	public void getChildren(TreeNode current, ArrayList<ArrayList<String>> layerElements, int layer, int maxLayer) {
+		String spaces = " ";
+		for (int i = 0; i <= (maxLayer-layer)*(maxLayer-layer+1); i++) {
+			spaces += "  ";
+		}
+		if (current.getLeft() != null) { //uses ansi color for Cyan (\u001b[36m)
+			if (current.getLeft().getData() < 10) { //pad single digit numbers
+				layerElements.get(layer).add(spaces + " <\u001b[36m" + current.getLeft().getData() + "\u001b[0m" + spaces);
+			} else {
+				layerElements.get(layer).add(spaces + "<\u001b[36m" + current.getLeft().getData() + "\u001b[0m" + spaces);
+			}
+		} else {
+			layerElements.get(layer).add(spaces + "<\u001b[36m__" + "\u001b[0m" + spaces + " ");
+		}
+		if (current.getRight() != null) { //uses ansi color for Red (\u001b[31m)
+			if (current.getRight().getData() < 10) { //pad single digit numbers
+				layerElements.get(layer).add(spaces + " \u001b[31m" + current.getRight().getData() + "\u001b[0m>" + spaces);
+			} else {
+				layerElements.get(layer).add(spaces + "\u001b[31m" + current.getRight().getData() + "\u001b[0m>" + spaces);
+			}
+		} else {
+			layerElements.get(layer).add(spaces + "\u001b[31m__\u001b[0m>" + spaces);
+		}
+		
+		if (layer == maxLayer) { //end if at last layer
+			return;
+		}
+		
+		layer++;
+		
+		getChildren(current.getLeft(), layerElements, layer, maxLayer);
+		getChildren(current.getRight(), layerElements, layer, maxLayer);
+	}
+	
+	//creates an ArrayList of ArrayLists to store values in the binary tree layer by layer
+	//so the entire BSTree can be printed by layer
+	@Override
+	public String toString() {
+		String output = "";
+		if (root == null) return output; //check if tree is empty
+		
+		int totalLayers = this.countLayers();
+		for (int i = 0; i < (int)Math.pow(2,totalLayers); i++) {
+			output += "=========";
+		}
+		output += "\n\n";
+		
+		ArrayList<ArrayList<String>> allData = new ArrayList<ArrayList<String>>();
+		for (int i = 0; i <= totalLayers; i++) {
+			allData.add(new ArrayList<String>());
+		}
+		String spaces = "";
+		for (int i = 0; i < (totalLayers+2)*(totalLayers+2); i++) {
+			spaces += " ";
+		}
+		allData.get(0).add(spaces + "\u001b[32m" + root.getData() + "\u001b[0m" + spaces); //layer 0
+		TreeNode current = root;
+		int layer = 1;
+		if (root.getLeft() != null || root.getRight() != null) { //populate layer 1 if not empty
+			getChildren(root, allData, layer, totalLayers);
+		}
+		
+		for (int i = 0; i <= totalLayers; i++) {
+			for (int j = (totalLayers-i)*(totalLayers-i+1); j > 0; j--) { //pad front with spaces
+				output += " ";
+			}
+			// output += allData.get(i).toString() + "\n\n";
+			for (int k = 0; k < allData.get(i).size(); k++) {
+				output += allData.get(i).get(k);
+			}
+			output += "\n\n";
+		}
+		for (int i = 0; i < (int)Math.pow(2,totalLayers); i++) {
+			output += "=========";
+		}
+		output += "\n\n";
+		return output;
+	}
+		
 }//end of class
