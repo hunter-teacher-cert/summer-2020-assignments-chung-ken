@@ -1,8 +1,31 @@
+/*###################################################
+ *#		BSTree Class - no BS! It's Binary Search.	#
+ *#		- Instance Variable:						#
+ *#			TreeNode root							#
+ *#		- Public Methods:							#
+ *#			int search(int key)						#
+ *#			void insert(int key)					#
+ *#			void inorderTraverse()					#
+ *#			void preorderTraverse()					#
+ *#			void postorderTraverse()				#
+ *#			void delete(int key)					#
+ *#			void seed() - create simple tree		#
+ *#			void createTree(int h) - complete tree	#
+ *#			int countLayers()						#
+ *#			String toString()						#
+ *###################################################
+ *
+ * Created: Tuesday, July 20, 2020
+ * Hunter Summer Institute - Day 14
+ *
+ */
+
 import java.io.*;
 import java.util.*;
 
 public class BSTree {
-	public TreeNode root;
+
+	private TreeNode root;
 	
 	public BSTree() {
 		this.root = null;
@@ -26,7 +49,7 @@ public class BSTree {
 	}//end search
 
 
-/* insert a value, key, at the end of a tree */	
+	/* insert a value, key, at the end of a tree */	
 	public void insert(int key) {
 		
 		TreeNode newNode = new TreeNode(key);
@@ -65,13 +88,12 @@ public class BSTree {
 	}//end search
 
 
-/* traverse the list in order - for a sorted list*/
+	/* traverse the list in order - for a sorted list*/
 	public void inorderTraverse() {
 		inorderTraverse(root);
 		System.out.println();
 	}
-	
-	public void inorderTraverse(TreeNode current) {
+	private void inorderTraverse(TreeNode current) {
 		
 		if (current == null) { //stop if at the end of tree
 			return;
@@ -88,13 +110,13 @@ public class BSTree {
 		inorderTraverse(current.getRight());
 	}
 	
-/* process each node then traverse */
+	
+	/* process each node then traverse */
 	public void preorderTraverse() {
 		preorderTraverse(root);
 		System.out.println();
 	}
-	
-	public void preorderTraverse(TreeNode current) {
+	private void preorderTraverse(TreeNode current) {
 		
 		if (current == null) { //stop if at the end of tree
 			return;
@@ -110,13 +132,13 @@ public class BSTree {
 		preorderTraverse(current.getRight());
 	}
 
-/* traverse the list and process each node at the end */
+
+	/* traverse the list and process each node at the end */
 	public void postorderTraverse() {
 		postorderTraverse(root);
 		System.out.println();
 	}
-	
-	public void postorderTraverse(TreeNode current) {
+	private void postorderTraverse(TreeNode current) {
 		
 		if (current == null) { //stop if at the end of tree
 			return;
@@ -133,7 +155,7 @@ public class BSTree {
 	}
 
 	
-/* delete a node from a tree... reconnecting other nodes can get complicated */
+	/* delete a node from a tree... reconnecting other nodes can get complicated */
 	public void delete(int key) {
 		
 		//if tree is empty... stop here
@@ -190,8 +212,9 @@ public class BSTree {
 			}
 		} else { //case 3 - left and right not null
 			//save current location
-			TreeNode frontDelete = front;
-			TreeNode trailerDelete = trailer;
+			TreeNode deletionNode = front;
+			// TreeNode deletionTrailer = trailer; //was not needed
+			
 			//find replacement value - using (a) - largest node on the left
 			front = front.getLeft();
 			while (front.getRight() != null) {
@@ -204,19 +227,13 @@ public class BSTree {
 			} else { //otherwise, just disconnect
 				trailer.setRight(null);
 			}
-			//replace data at frontDelete with replacement data
+			//replace data at deletionNode with replacement data
 			//instead of replacing whole node and copying left-right branches
-			frontDelete.setData(front.getData());
+			deletionNode.setData(front.getData());
 			
 		}
 	}
-	
-	//helper method for delete - to find replacement value (case 3)
-	public TreeNode replacementNode(TreeNode top) {
-		int countleft = 0;
-		int countright = 0;
-		return null;
-	}
+
 	
 	//create a basic tree
 	public void seed() {
@@ -238,15 +255,15 @@ public class BSTree {
 		root.getRight().setRight(t);
 	}
 	
-	//Uses recursion to build a tree with the numbers 1 through (2^(h+1)-1)
-	//with h rows.
+	
+	//Uses recursion to build a symmetrical tree with the numbers 
+	// 1 through (2^(h+1)-1) spread across h rows.
 	public void createTree(int h) { //h is the height of the tree
 		int value = (int)Math.pow(2,h);
 		root = new TreeNode(value);
 		createTree(root, value, h-1);
 	}
-	
-	public void createTree(TreeNode current, int pValue, int h) {
+	private void createTree(TreeNode current, int pValue, int h) {
 		if (h == 0) {
 			current.setLeft(new TreeNode(pValue-1));
 			current.setRight(new TreeNode(pValue+1));
@@ -261,14 +278,14 @@ public class BSTree {
 		createTree(current.getRight(), rightValue, h-1);
 	}
 	
+	
 	//recursive method to count how many layers in our tree
 	public int countLayers() {
 		TreeNode current = root;
 		int layer = 0;
 		return countLayers(root, layer);
 	}
-	
-	public int countLayers(TreeNode current, int layer) {
+	private int countLayers(TreeNode current, int layer) {
 		if (current.getLeft() == null && current.getRight() == null) {
 			return layer;
 		}
@@ -298,8 +315,11 @@ public class BSTree {
 		return -1;
 	}
 	
+	
 	//helper method for toString - puts all node data into an ArrayList by layer
-	public void getChildren(TreeNode current, ArrayList<ArrayList<String>> layerElements, int layer, int maxLayer) {
+	//left nodes are printed in cyan, right nodes are printed in red
+	//note: the root node is printed in green, but that is handled in toString()
+	private void getChildren(TreeNode current, ArrayList<ArrayList<String>> layerElements, int layer, int maxLayer) {
 		String spaces = " ";
 		for (int i = 0; i <= (maxLayer-layer)*(maxLayer-layer+1); i++) {
 			spaces += "  ";
@@ -332,9 +352,9 @@ public class BSTree {
 		getChildren(current.getLeft(), layerElements, layer, maxLayer);
 		getChildren(current.getRight(), layerElements, layer, maxLayer);
 	}
-	
 	//creates an ArrayList of ArrayLists to store values in the binary tree layer by layer
 	//so the entire BSTree can be printed by layer
+	//calls getChildren() method which then calls itself - 
 	@Override
 	public String toString() {
 		String output = "";
