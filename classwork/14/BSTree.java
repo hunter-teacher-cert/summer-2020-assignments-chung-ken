@@ -99,7 +99,6 @@ public class BSTree {
 			return;
 		}
 		
-		
 		//recursively print out the left subtree (all the less than values)
 		inorderTraverse(current.getLeft());
 		
@@ -167,7 +166,7 @@ public class BSTree {
 		TreeNode front = root;
 		TreeNode trailer = front;
 		
-		while (front.getData() != key && front != null) {
+		while (front != null && front.getData() != key) {
 			int frontValue = front.getData();
 			if (frontValue == key) { //found the key
 				break;
@@ -193,24 +192,36 @@ public class BSTree {
 		//  a) the largest node on the left branch OR
 		//  b) the smallest node on the right branch
 		if (front.getLeft() == null && front.getRight() == null) { //case 1
+			System.out.println("Deletion case 1:");
 			if (trailer.getLeft() != null && trailer.getLeft().getData() == key) {
 				trailer.setLeft(null);
 			} else {
 				trailer.setRight(null);
 			}
 		} else if (front.getLeft() == null) { //case 2, has right value
-			if (trailer.getLeft().getData() == key) {
-				trailer.setLeft(front.getRight());
+			System.out.println("Deletion case 2R:");
+			if (front == root) { //special case where trailer is not used
+				root = root.getRight();
 			} else {
-				trailer.setRight(front.getRight());
+				if (trailer.getLeft().getData() == key) {
+					trailer.setLeft(front.getRight());
+				} else {
+					trailer.setRight(front.getRight());
+				}
 			}
 		} else if (front.getRight() == null) { //case 2, has left value
-			if (trailer.getLeft().getData() == key) {
-				trailer.setLeft(front.getLeft());
+			System.out.println("Deletion case 2L:");
+			if (front == root) { //special case where trialer is not used
+				root = root.getLeft();
 			} else {
-				trailer.setRight(front.getLeft());
+				if (trailer.getLeft().getData() == key) {
+					trailer.setLeft(front.getLeft());
+				} else {
+					trailer.setRight(front.getLeft());
+				}
 			}
 		} else { //case 3 - left and right not null
+		System.out.println("Deletion case 3:");
 			//save current location
 			TreeNode deletionNode = front;
 			// TreeNode deletionTrailer = trailer; //was not needed
@@ -221,15 +232,21 @@ public class BSTree {
 				trailer = front;
 				front = front.getRight();
 			}
-			//if replacement node has a left branch, connect it to trailer
-			if (front.getLeft() != null) {
-				trailer.setRight(front.getLeft());
-			} else { //otherwise, just disconnect
-				trailer.setRight(null);
+			//if replacement node is the first left branch node
+			if (front == deletionNode.getLeft()) {
+				deletionNode.setLeft(null);
+			} else {
+				//if replacement node has a left branch, connect it to trailer
+				if (front.getLeft() != null) {
+					trailer.setRight(front.getLeft());
+				} else { //otherwise, just disconnect
+					trailer.setRight(null);
+				}
 			}
 			//replace data at deletionNode with replacement data
 			//instead of replacing whole node and copying left-right branches
 			deletionNode.setData(front.getData());
+			
 			
 		}
 	}
@@ -320,26 +337,41 @@ public class BSTree {
 	//left nodes are printed in cyan, right nodes are printed in red
 	//note: the root node is printed in green, but that is handled in toString()
 	private void getChildren(TreeNode current, ArrayList<ArrayList<String>> layerElements, int layer, int maxLayer) {
+		if (current != null) { //error checking
+			System.out.println("Entering layer " + layer);
+			System.out.println("... from " + current.getData());
+		} else {
+			System.out.println("Current is null... what do i do???");
+		}
+		
 		String spaces = " ";
 		for (int i = 0; i <= (maxLayer-layer)*(maxLayer-layer+1); i++) {
 			spaces += "  ";
 		}
-		if (current.getLeft() != null) { //uses ansi color for Cyan (\u001b[36m)
+		
+		//populate information from left branch
+		if (current != null && current.getLeft() != null) { //uses ansi color for Cyan (\u001b[36m)
+			System.out.println("...looking left..." + current.getLeft().getData());
 			if (current.getLeft().getData() < 10) { //pad single digit numbers
 				layerElements.get(layer).add(spaces + " <\u001b[36m" + current.getLeft().getData() + "\u001b[0m" + spaces);
 			} else {
 				layerElements.get(layer).add(spaces + "<\u001b[36m" + current.getLeft().getData() + "\u001b[0m" + spaces);
 			}
 		} else {
+			System.out.println("...looking left..." + "null");
 			layerElements.get(layer).add(spaces + "<\u001b[36m__" + "\u001b[0m" + spaces + " ");
 		}
-		if (current.getRight() != null) { //uses ansi color for Red (\u001b[31m)
+		
+		//populate information from right branch
+		if (current != null && current.getRight() != null) { //uses ansi color for Red (\u001b[31m)
+			System.out.println("...looking right..." + current.getRight().getData());
 			if (current.getRight().getData() < 10) { //pad single digit numbers
 				layerElements.get(layer).add(spaces + " \u001b[31m" + current.getRight().getData() + "\u001b[0m>" + spaces);
 			} else {
 				layerElements.get(layer).add(spaces + "\u001b[31m" + current.getRight().getData() + "\u001b[0m>" + spaces);
 			}
 		} else {
+			System.out.println("...looking right..." + "null");
 			layerElements.get(layer).add(spaces + "\u001b[31m__\u001b[0m>" + spaces);
 		}
 		
@@ -347,8 +379,8 @@ public class BSTree {
 			return;
 		}
 		
+		//else, work on next layer
 		layer++;
-		
 		getChildren(current.getLeft(), layerElements, layer, maxLayer);
 		getChildren(current.getRight(), layerElements, layer, maxLayer);
 	}
@@ -366,6 +398,7 @@ public class BSTree {
 		}
 		output += "\n\n";
 		
+		//the ArrayList of ArrayLists to store the tree values by layer
 		ArrayList<ArrayList<String>> allData = new ArrayList<ArrayList<String>>();
 		for (int i = 0; i <= totalLayers; i++) {
 			allData.add(new ArrayList<String>());
@@ -375,6 +408,7 @@ public class BSTree {
 			spaces += " ";
 		}
 		allData.get(0).add(spaces + "\u001b[32m" + root.getData() + "\u001b[0m" + spaces); //layer 0
+		System.out.println("Root = " + root.getData());
 		TreeNode current = root;
 		int layer = 1;
 		if (root.getLeft() != null || root.getRight() != null) { //populate layer 1 if not empty
