@@ -36,7 +36,7 @@ The LinkedLists are necessary to implement an open hashing, or chaining, in case
 
 *In this implementation, we are expecting many collisions, because we are only using the first letter of the last name to generate the hash key. It would be worthwhile to experiment with other algorithms to see how we could produce mostly unique hash keys.*
 
-### PhoneBook has the following operations / methods:
+#### PhoneBook has the following operations / methods:
 ```java
   public int hashFunction(String key)  //this should be private in real implementation
 ```
@@ -60,7 +60,7 @@ The LinkedLists are necessary to implement an open hashing, or chaining, in case
 
 
 
-### There is also a working `main()` method that demonstrates all of the method. The output is:
+#### There is also a working `main()` method that demonstrates all of the method. The output is:
 ```
 ***** Testing add() and printList() *****
 
@@ -132,7 +132,7 @@ Zamansky: 25
 ```
 
 
-### Lastly, the constructor initializes the instance variables as:
+#### Lastly, the constructor initializes the instance variables as:
 ```java
   capacity = 26;
   book = new LinkedList[capacity];
@@ -143,11 +143,17 @@ The value for `capacity` was set to 26 to accommodate A-Z. The idea of adding th
 ## Additional questions:
 
 1. What is the runtime for add?
-	Should be almost constant time O(1).
+
+	> Should be almost constant time O(1).
+	
 2. What is the runtime for find?
-	Ranges from O(1) if there are no collisions. In the worst case, where there is only one index with all the collisions, the search may take O(n) time.
+
+	> Ranges from O(1) if there are no collisions. In the worst case, where there is only one index with all the collisions, the search may take O(n) time.
+	
 3. What is the runtime for remove?
-	We aren't concerned about the runtime for remove, but in this implementation, its runtime should be the same as find.
+
+	> We aren't concerned about the runtime for remove, but in this implementation, its runtime should be the same as find.
+
 4. What is the runtime for printList?
 	This will be the slowest method because it has to traverse through the entire phonebook which will take O(n) time.
 
@@ -159,11 +165,13 @@ The value for `capacity` was set to 26 to accommodate A-Z. The idea of adding th
 In addition to looking up people by last name, you might want to do a reverse lookup - that is look up someone by number.
 
 1. Describe an algorithm that you could use to implement a revese lookup by number on your data structure. What is the runtime?
-	If I had to look up a `Person` by `phoneNumber` as the `PhoneBook` currently is, I'd have to do a brute force search, similar to the `printList()` method to loop through each object in my LinkedList array until I got a match.  This could potentially take O(n) time.
+
+	> If I had to look up a `Person` by `phoneNumber` as the `PhoneBook` currently is, I'd have to do a brute force search, similar to the `printList()` method to loop through each object in my LinkedList array until I got a match.  This could potentially take O(n) time.
 
 2. How might you augment the data structure to implement reverse
    lookup more quickly? What would the algorithm look like now? What is the new runtime?
-	In my readings, I came across the idea of doubleHashing to make the hash key more unique.  This lead me to the idea of making our array a 2D array and using 2 hash keys to get a [row][column] index - one hash key for `lastName` and another hash key for `phoneNumber`. The cost is more memory, but in return we'd have an easier search.
+
+	> In my readings, I came across the idea of doubleHashing to make the hash key more unique.  This lead me to the idea of making our array a 2D array and using 2 hash keys to get a [row][column] index - one hash key for `lastName` and another hash key for `phoneNumber`. The cost is more memory, but in return we'd have an easier search.
 	*In class, we mentioned the possibility of just creating a 2nd hash table to save memory.
 	The runtime for both cases should be about the same as the orginal `find()` method, ranging from constant O(1) to O(n).
 
