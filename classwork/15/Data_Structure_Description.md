@@ -36,7 +36,7 @@ The LinkedLists are necessary to implement an open hashing, or chaining, in case
 
 *In this implementation, we are expecting many collisions, because we are only using the first letter of the last name to generate the hash key. It would be worthwhile to experiment with other algorithms to see how we could produce mostly unique hash keys.*
 
-###PhoneBook has the following operations / methods:
+### PhoneBook has the following operations / methods:
 ```java
   public int hashFunction(String key)  //this should be private in real implementation
 ```
@@ -60,7 +60,7 @@ The LinkedLists are necessary to implement an open hashing, or chaining, in case
 
 
 
-###There is also a working `main()` method that demonstrates all of the method. The output is:
+### There is also a working `main()` method that demonstrates all of the method. The output is:
 ```
 ***** Testing add() and printList() *****
 
@@ -132,7 +132,7 @@ Zamansky: 25
 ```
 
 
-###Lastly, the constructor initializes the instance variables as:
+### Lastly, the constructor initializes the instance variables as:
 ```java
   capacity = 26;
   book = new LinkedList[capacity];
