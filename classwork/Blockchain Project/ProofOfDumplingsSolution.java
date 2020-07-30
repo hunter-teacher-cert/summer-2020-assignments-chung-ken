@@ -4,18 +4,28 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException; 
 
 //Proof of Work Class
-public class PoW {
+public class ProofOfDumplingsSolution {
 	
 	public static void main(String[] args) {
 		String input = "I Love Dumplings!";
 		String nonce = "";
 		System.out.println( calculateHash(input + nonce) );
 		long startingI = 0;
+		
+		//we really only need to find a given number of 0s,
+		//but the for loop lets you see progress as you find more and more leading 0s
+		//
+		// Note: We only needed 7 leading zeros for this challenge, but the loop goes up to 17
+		//		fyi - on my laptop, I only found 9 zeros after 11 hours and 43 minutes
 		for (int difficulty = 1; difficulty < 18; difficulty++) {
+			
+			// create a String padding that has the number of 0s we need
 			String padding = "";
 			for (int z = 0; z < difficulty; z++) {
 				padding += "0";
 			}
+			
+			//start the timer for how long it takes to find the next 0
 			long startTime = System.nanoTime();
 			for (long i = startingI; i < Long.MAX_VALUE; i++) {
 				nonce = "" + i;
@@ -24,10 +34,13 @@ public class PoW {
 					System.out.println("\n" + difficulty + " zeros Solved!");
 					System.out.println("nonce = " + nonce);
 					System.out.println("hash = " + hash);
-					startingI = i;
+					startingI = i; //startingI is used to continue the search for the next difficulty where we left off
 					break;
 				}
 			}
+			
+			//stop the timer right after we find our match
+			//the rest of this code is just to print out a nice time
 			long totalTime = System.nanoTime() - startTime;
 			if (totalTime < 1000)
 				System.out.println("computational time = " + totalTime + " ns");
