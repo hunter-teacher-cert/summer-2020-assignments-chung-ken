@@ -1,0 +1,90 @@
+# Reverse Arboreal Engineering
+
+Tree0
+pre-order: EGDKINLOW
+in-order: EKDNIOLWG
+
+			E
+											G
+					D
+				K			I
+						N			L
+								O		W
+
+post-order: KNOWLIDGE
+----------------------------
+
+Tree1
+
+in-order: UOGDALS
+post-order: UGOASLD
+
+			D
+	O				L
+U		G		A		S
+
+pre-order: D0UGLAS
+
+----------------------------
+
+Tree2
+
+pre-order: WHITEOAK
+post-order: TEIHKAOW
+
+				W
+			H					O
+	I					A		
+T		E			K
+
+				W
+			H				O
+	I				A		
+T		E				K
+
+				W
+			H		O
+	I					A		
+T		E					K
+
+				W
+			H		O
+	I						A		
+T		E				K
+
+in-order: TIEHWKAO	or	TIEHWAKO	or	TIEHWOAK	or	TIEHWOKA
+
+---------------------------
+
+Tree3
+
+pre-order: KCOLMEH
+in-order: KCOLMEH
+
+K
+	C
+		O
+			L
+				M
+					E
+						H	
+
+post-order: HEMLOCK
+
+################# Q's to Consider ##########################
+Is it possible to reconstruct each tree? How do you know?
+	Yes, but there may be multiple solutions.
+	
+For each pair of traversals given, could they have come from but 1 tree? 0 trees? Many trees? Justify your response.
+	Tree 2 has 4 possible solutions - is this only when we don't have in-order traverse?
+
+What info does each traversal convey? What information does a pair of traversals, taken together, convey?
+	PRE-ORDER print parents before children
+	POST-ORDER prints children before parents
+	IN-ORDER prints the tree left-to-right irregardless of level/layer
+
+
+
+
+
+
